@@ -1,0 +1,23 @@
+Code written for the 1st generation leptoquark analysis Physics DQM package.
+Author: Ellie Twedt
+Date: Oct 29, 2009
+
+This code has been tested in CMSSW_3_1_3
+
+In order to run this code, check all the code out of cvs:
+>cvs co -d Leptoquarks/PhysicsDQM UserCode/Leptoquarks/PhysicsDQM
+
+Compile the code:
+>cd Leptoquarks/PhysicsDQM
+>scram b
+
+Change the input file in lqeDQM_cfg.py to point to your own data file,
+and the number of events you want to run on.
+
+Run the code:
+>cmsenv
+>cmsRun lqeDQM_cfg.py
+
+If you want to chage the cut values for jets, electrons or MET
+you can change them in file python/lqeDQM_cfi.py or pass them as parameters
+in the lqeDQM_cfg.py file.
