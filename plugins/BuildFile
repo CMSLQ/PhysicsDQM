@@ -1,0 +1,4 @@
+<use name=Leptoquarks/PhysicsDQM>
+<library file=plugins.cc name=LeptoquarksPhysicsDQMPlugins>
+ <flags EDM_PLUGIN=1>
+</library>
