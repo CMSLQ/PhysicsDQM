@@ -6,8 +6,8 @@
  *
  *  DQM offline for first generation leptoquarks
  *
- *  $Date: 2009/10/22 $
- *  $Revision: 1.00 $
+ *  $Date: 2009/11/02 22:18:41 $
+ *  $Revision: 1.1 $
  *  \author Ellie Twedt, University of Maryland 
  */
 
@@ -63,6 +63,7 @@ class LQeDQM : public edm::EDAnalyzer {
   MonitorElement* h_e1j_invMass;
   MonitorElement* h_e2j_invMass;
   MonitorElement* h_ee_invMass;
+  MonitorElement* h_eMET_transMass;
   MonitorElement* h_ST;
   MonitorElement* h_STmet;
   MonitorElement* h_metj_transMass;

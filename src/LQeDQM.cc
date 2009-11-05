@@ -1,8 +1,8 @@
 /*
  *  See header file for a description of this class.
  *
- *  $Date: 2009/10/22 $
- *  $Revision: 1.00 $
+ *  $Date: 2009/11/02 22:18:12 $
+ *  $Revision: 1.1 $
  *  \author Ellie Twedt, University of Maryland 
  */
 
@@ -75,8 +75,9 @@ void LQeDQM::beginJob(EventSetup const& iSetup) {
   h_e1j_invMass   = theDbe->book1D("h_e1j_invMass",   "e1j Invariant Mass;InvMass (Gev)"        , 50, 0.0, 1000.0 );
   h_e2j_invMass   = theDbe->book1D("h_e2j_invMass",   "e2j Invariant Mass;InvMass (Gev)"        , 50, 0.0, 1000.0 );
   h_ee_invMass   = theDbe->book1D("h_ee_invMass",   "ee Invariant Mass;InvMass (Gev)"        , 50, 0.0, 1000.0 );
+  h_eMET_transMass   = theDbe->book1D("h_eMET_transMass",   "elec+MET Transverse Mass;Transverse Mass (Gev)"        , 50, 0.0, 1000.0 );
   h_ST           = theDbe->book1D("h_ST","ST = pT 2 leading ele + pT 2 leading jets",100,0,2000);
-  h_STmet           = theDbe->book1D("h_STmet","STmet = pT leading ele + pT 2 leading jets + MET",100,0,2000);
+  h_STmet           = theDbe->book1D("h_STmet","STmet = pT leading ele + pT 2 leading jets + MET;STmet (GeV)",100,0,2000);
   h_metj_transMass   = theDbe->book1D("h_metj_transMass",   "Transverse Mass MET+jet (Gev)"        , 50, 0.0, 1000.0 );
   h_jet1_et       = theDbe->book1D("h_jet1_et",       "Jet with highest E_{T} (from "+theCaloJetCollectionLabel.label()+");E_{T}(1^{st} jet) (GeV)",    20, 0., 500.0);
   h_jet2_et      = theDbe->book1D("h_jet2_et",      "Jet with 2^{nd} highest E_{T} (from "+theCaloJetCollectionLabel.label()+");E_{T}(2^{nd} jet) (GeV)",    20, 0., 500.0);
@@ -208,16 +209,16 @@ void LQeDQM::analyze(const Event& iEvent, const EventSetup& iSetup) {
   TLorentzVector MET_vector;
   //  MET_vector = TLorentzVector(caloMETCollection->begin()->momentum().x(),caloMETCollection->begin()->momentum().y(),caloMETCollection->begin()->momentum().z(),caloMETCollection->begin()->p());
 
-  TVector2 v_MET;
-  TVector2 v_jet1;
-  TVector2 v_jet2;
+  TVector2 v_MET, v_jet1, v_jet2, v_ele1;
   v_MET.SetMagPhi(1,caloMETCollection->begin()->phi());
   v_jet1.SetMagPhi(1,jet1_phi);
   v_jet2.SetMagPhi(1,jet2_phi);
+  v_ele1.SetMagPhi(1,electron_phi);
   float deltaphi1 = v_MET.DeltaPhi(v_jet1);
   float deltaphi2 = v_MET.DeltaPhi(v_jet2);
   double MTnj1 = sqrt(2 * missing_et * jet1_et * (1 - cos(deltaphi1)) );
   double MTnj2 = sqrt(2 * missing_et * jet2_et * (1 - cos(deltaphi2)) );
+  double MTne1 = sqrt(2 * electron_et * missing_et * (1 - cos(v_MET.DeltaPhi(v_ele1)) ));
 
   //////////////////////////////////////////////////////////
 
@@ -238,13 +239,13 @@ void LQeDQM::analyze(const Event& iEvent, const EventSetup& iSetup) {
     if (jet2_et > 0.0) {
       e1j2 = e1 + j2;
       h_e1j_invMass->Fill(e1j2.M());
-      ee = e1 + e2;
-      h_ee_invMass->Fill(ee.M());
       h_STmet->Fill(jet1_et + jet2_et + electron_et + missing_et);
     }
   }
   if (electron2_et>0.0) {
     fill_e2 = true;
+    ee = e1 + e2;
+    h_ee_invMass->Fill(ee.M());
     if (jet1_et > 0.0) {
       e2j1 = e2 + j1;
       h_e2j_invMass->Fill(e2j1.M());
@@ -280,6 +281,7 @@ void LQeDQM::analyze(const Event& iEvent, const EventSetup& iSetup) {
   }
 
   if (missing_et>metCut) {
+    if (fill_e1)  h_eMET_transMass->Fill(MTne1);
     if (jet1_et>0.0){
       h_metj_transMass->Fill(MTnj1);
     }
